@@ -1,0 +1,21 @@
+{
+  "name": "prepare-project-step",
+  "version": "1.0.0",
+  "description": "**DEPRECATED**, please use the [`bitrise :step create` Bitrise CLI plugin](https://discuss.bitrise.io/t/step-create-plugin-quickly-generate-a-new-step/1609) and its built in template instead (https://github.com/bitrise-core/bitrise-plugins-step/tree/master/create/templates)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws": "0.0.3-2",
+    "aws-sdk": "^2.117.0",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "q": "^1.5.0",
+    "q-io": "^1.13.4",
+    "yamljs": "^0.3.0",
+    "yargs": "^9.0.1"
+  }
+}
