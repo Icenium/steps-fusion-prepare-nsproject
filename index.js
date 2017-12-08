@@ -26,7 +26,7 @@ let downloadRequests = [];
 return qfs.makeTree(workspacePath, "775")
 	.then(() => {
 		request.files.forEach((fileDesc) => {
-			const filePath = path.join(workspacePath, downloadService.getDownloadDestination(fileDesc.sourceUri, request.args));
+			const filePath = path.join(path.dirname(workspacePath), downloadService.getDownloadDestination(fileDesc.sourceUri, request.args));
 			fileDesc.fullPath = filePath;
 			downloadRequests.push(
 				downloadService.download(fileDesc.sourceUri, filePath));
