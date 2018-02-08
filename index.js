@@ -44,7 +44,7 @@ return qfs.makeTree(workspacePath, "775")
 	})
 	.then((buildArgs) => {
 		const base64Args = new Buffer(JSON.stringify(buildArgs)).toString("base64");
-		child_process.spawnSync("envman", ["add", "--key", "BUILD_ARGS", "--value", `&${base64Args}`]);
+		child_process.spawnSync("envman", ["add", "--key", "BUILD_ARGS", "--value", `${base64Args}`]);
 		child_process.spawnSync("envman", ["add", "--key", "PROJECT_PATH", "--value", `${buildArgs.projectPath}`]);
 	})
 	.catch(err => console.log(`Error: ${err}`))
