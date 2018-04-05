@@ -6,7 +6,6 @@ const os = require("os")
 const qfs = require("q-io/fs");
 const path = require("path");
 const _ = require("lodash");
-const Q = require("q");
 const child_process = require("child_process");
 const constants = require("./lib/constants");
 
@@ -21,10 +20,10 @@ const downloads = {};
 const projectService = request.args.platform.toLowerCase() === constants.PLATFORM.ANDROID ?
 	new AndroidProjectService() : new IosProjectService();
 const downloadService = new DownloadService(request.storageConfiguration);
-let downloadRequests = [];
 
 return qfs.makeTree(workspacePath, "775")
 	.then(() => {
+		const downloadRequests = [];
 		request.files.forEach((fileDesc) => {
 			const filePath = path.join(path.dirname(workspacePath), downloadService.getDownloadDestination(fileDesc.sourceUri, request.args));
 			fileDesc.fullPath = filePath;
@@ -35,7 +34,7 @@ return qfs.makeTree(workspacePath, "775")
 
 		return downloadRequests
 	})
-	.then(Q.all)
+	.then((downloadRequests) => Promise.all(downloadRequests))
 	.then(() => projectService.prepare(workspacePath, downloads, request))
 	.then((buildArgs) => {
 		_.extend(buildArgs, request.args)
