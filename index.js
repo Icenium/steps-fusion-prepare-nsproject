@@ -1,9 +1,5 @@
 "use strict";
 
-const { argv } = require("yargs");
-const crypto = require("crypto");
-const os = require("os")
-const qfs = require("q-io/fs");
 const path = require("path");
 const _ = require("lodash");
 const child_process = require("child_process");
@@ -13,15 +9,15 @@ const { DownloadService } = require("./lib/download-service");
 const { IosProjectService } = require("./lib/ios-project-service");
 const { AndroidProjectService } = require("./lib/android-project-service");
 
-const jsonArgv = new Buffer(argv._[0], "base64").toString("utf8");
+const jsonArgv = new Buffer(process.argv[2], "base64").toString("utf8");
 const request = JSON.parse(jsonArgv);
-const workspacePath = path.join(os.homedir(), getHashSum(`${request.args.userEmail}_${request.args.projectName}`), request.args.templateAppName)
+const workspacePath = request.args.workspacePath;
 const downloads = {};
 const projectService = request.args.platform.toLowerCase() === constants.PLATFORM.ANDROID ?
 	new AndroidProjectService() : new IosProjectService();
 const downloadService = new DownloadService(request.storageConfiguration);
 
-return qfs.makeTree(workspacePath, "775")
+return Promise.resolve()
 	.then(() => {
 		const downloadRequests = [];
 		request.files.forEach((fileDesc) => {
@@ -32,25 +28,18 @@ return qfs.makeTree(workspacePath, "775")
 			downloads[fileDesc.disposition] = filePath;
 		});
 
-		return downloadRequests
+		return downloadRequests;
 	})
 	.then((downloadRequests) => Promise.all(downloadRequests))
 	.then(() => projectService.prepare(workspacePath, downloads, request))
 	.then((buildArgs) => {
-		_.extend(buildArgs, request.args)
+		_.extend(buildArgs, request.args);
 		buildArgs.isSandboxDisabled = true;
-		return buildArgs
+		return buildArgs;
 	})
 	.then((buildArgs) => {
 		const base64Args = new Buffer(JSON.stringify(buildArgs)).toString("base64");
 		child_process.spawnSync("envman", ["add", "--key", "BUILD_ARGS", "--value", `${base64Args}`]);
 		child_process.spawnSync("envman", ["add", "--key", "PROJECT_PATH", "--value", `${buildArgs.projectPath}`]);
 	})
-	.catch(err => console.log(`Error: ${err}`))
-
-function getHashSum(str, algo) {
-	const hash = crypto.createHash(algo || "sha1");
-	hash.update(str);
-
-	return hash.digest("hex");
-}
+	.catch(err => console.log(`Error: ${err}`));
