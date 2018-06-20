@@ -17,7 +17,7 @@ const projectService = request.args.platform.toLowerCase() === constants.PLATFOR
 	new AndroidProjectService() : new IosProjectService();
 const downloadService = new DownloadService(request.storageConfiguration);
 
-return Promise.resolve()
+Promise.resolve()
 	.then(() => {
 		const downloadRequests = [];
 		request.files.forEach((fileDesc) => {
