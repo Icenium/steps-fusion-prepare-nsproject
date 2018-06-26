@@ -4,6 +4,7 @@
   "description": "**DEPRECATED**, please use the [`bitrise :step create` Bitrise CLI plugin](https://discuss.bitrise.io/t/step-create-plugin-quickly-generate-a-new-step/1609) and its built in template instead (https://github.com/bitrise-core/bitrise-plugins-step/tree/master/create/templates)",
   "main": "index.js",
   "scripts": {
+    "lint": "node node_modules/eslint/bin/eslint.js **.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +14,8 @@
     "lodash": "4.17.4",
     "mkdirp": "0.5.1",
     "request": "2.85.0"
+  },
+  "devDependencies": {
+    "eslint": "4.19.1"
   }
 }
